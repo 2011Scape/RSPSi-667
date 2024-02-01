@@ -5,8 +5,8 @@ The following has been added / removed to / from the original:
 - removed unnecessary plugins for other revisions.
 
 # Compatibility
-Use Oracle JDK / JRE 8. 
-JDK: https://www.oracle.com/java/technologies/javase/javase8-archive-downloads.html
-JRE: https://www.java.com/en/download/manual.jsp
-
+Use Oracle JDK / JRE 8.   
+JDK: https://www.oracle.com/java/technologies/javase/javase8-archive-downloads.html  
+JRE: https://www.java.com/en/download/manual.jsp  
+  
 This project uses JavaFX components, which are only available from the above linked SDK / JRE. 
