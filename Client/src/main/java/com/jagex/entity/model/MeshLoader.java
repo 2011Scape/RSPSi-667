@@ -19,19 +19,19 @@ import com.jagex.net.ResourceResponse;
 
 @Slf4j
 public class MeshLoader {
-	
+
 	public MeshLoader(ResourceProvider provider) throws Exception {
-		if(singleton != null)
+		if (singleton != null)
 			throw new Exception("MeshLoader.class already loaded!");
 		this.provider = provider;
 		EventBus.getDefault().register(this);
 		singleton = this;
 	}
-	
+
 	private Map<Integer, Mesh> loadedMeshes = Collections.synchronizedMap(Maps.newHashMap());
 	private List<Integer> awaitingLoad = Collections.synchronizedList(Lists.newArrayList());
 	private ResourceProvider provider;
-	
+
 
 	public void clear(int id) {
 		loadedMeshes.remove(id);
@@ -41,28 +41,29 @@ public class MeshLoader {
 		clearAll();
 		singleton = null;
 	}
-	
+
 	@Subscribe(threadMode = ThreadMode.ASYNC)
 	public void onResourceResponse(ResourceResponse response) {
-		if(response.getRequest().getType() == CacheFileType.MODEL) {
+		if (response.getRequest().getType() == CacheFileType.MODEL) {
 			load(response.decompress(), response.getRequest().getFile());
 		}
 	}
-	
+
 	public static Mesh load(byte[] data) {
 		MeshRevision revision = MeshUtils.getRevision(data);
-		switch(revision) {
-		case REVISION_525:
+		switch (revision) {
+			case REVISION_525:
+				return new Mesh525(data);
 			case REVISION_622:
-			return new Mesh525(data);
+				return new Mesh622(data);
 			//return new Mesh622(data);
-		case REVISION_317:
-		default:
-			return new Mesh317(data);
-		
+			case REVISION_317:
+			default:
+				return new Mesh317(data);
+
 		}
 	}
-	
+
 	public Mesh load(byte[] data, int id) {
 		MeshRevision revision = MeshUtils.getRevision(data);
 		//System.out.println("Attempting to load model " + id + " revision " + revision.name());
@@ -70,10 +71,12 @@ public class MeshLoader {
 		try {
 			switch (revision) {
 				case REVISION_622:
+					mesh = new Mesh622(data);
+					break;
 				case REVISION_525:
 					mesh = new Mesh525(data);
 					break;
-					//mesh = new Mesh622(data);
+				//mesh = new Mesh622(data);
 				//	break;
 
 				default:
@@ -82,7 +85,7 @@ public class MeshLoader {
 					break;
 
 			}
-		} catch(Exception ex){
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 		mesh.id = id;
@@ -91,12 +94,12 @@ public class MeshLoader {
 		loadedMeshes.put(id, mesh);
 
 		awaitingLoad.remove(Integer.valueOf(id));
-		
+
 		return mesh;
 	}
-	
+
 	public boolean loaded(int id) {
-		if(loadedMeshes.containsKey(id))
+		if (loadedMeshes.containsKey(id))
 			return true;
 
 		boolean alreadyLoading = awaitingLoad.contains(id);
@@ -110,12 +113,12 @@ public class MeshLoader {
 	}
 
 	public Mesh lookup(int id) {
-		if(loaded(id)) {
+		if (loaded(id)) {
 			return loadedMeshes.get(id);
-		} 
+		}
 		return null;
 	}
-	
+
 	public void requestMesh(int id) {
 		provider.requestFile(CacheFileType.MODEL, id);
 	}
