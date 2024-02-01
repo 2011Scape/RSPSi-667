@@ -10,3 +10,7 @@ JDK: https://www.oracle.com/java/technologies/javase/javase8-archive-downloads.h
 JRE: https://www.java.com/en/download/manual.jsp  
   
 This project uses JavaFX components, which are only available from the above linked SDK / JRE. 
+
+# Resources
+- [667 cache](https://archive.openrs2.org/caches/runescape/278/disk.zip)
+- [667 xteas](https://archive.openrs2.org/caches/runescape/278/keys.json)
